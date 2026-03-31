@@ -71,6 +71,10 @@ prisma/migrations/*/migration.sql
 # Build artifacts
 *.tsbuildinfo
 
+# Local apps (not in remote repo)
+/app/
+/mobile/
+
 # Tauri
 app/src-tauri/target/
 app/src-tauri/gen/schemas/
