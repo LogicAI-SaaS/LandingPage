@@ -349,7 +349,7 @@ export default function InstancePage() {
                     </button>
                     {instance.status === 'running' && (
                         <a
-                            href={`http://localhost:${instance.port}`}
+                            href={`https://${instance.subdomain}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all"
@@ -460,12 +460,12 @@ export default function InstancePage() {
                                 <div className="flex items-center justify-between py-2">
                                     <span className="text-gray-400 text-sm">URL d'accès</span>
                                     <a
-                                        href={`http://localhost:${instance.port}`}
+                                        href={`https://${instance.subdomain}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="text-orange-400 hover:text-orange-300 text-xs font-mono flex items-center gap-1"
                                     >
-                                        localhost:{instance.port}
+                                        {instance.subdomain}
                                         <ExternalLink className="size-3" />
                                     </a>
                                 </div>
@@ -641,7 +641,7 @@ export default function InstancePage() {
                         <div className="bg-linear-to-br from-orange-500/10 to-amber-500/10 rounded-lg p-6 border border-orange-500/30">
                             <h3 className="text-lg font-semibold text-white mb-3">Accès rapide</h3>
                             <a
-                                href={`http://localhost:${instance.port}`}
+                                href={`https://${instance.subdomain}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="block w-full text-center bg-orange-500 hover:bg-orange-600 text-white px-4 py-3 rounded-lg text-sm font-semibold transition-all"
