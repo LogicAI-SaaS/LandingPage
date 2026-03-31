@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   View,
   Text,
@@ -37,9 +37,13 @@ export default function DashboardScreen() {
     cloud: 0,
   });
 
-  const fetchInstances = async () => {
-    if (!token) return;
+  const fetchInstances = useCallback(async () => {
+    if (!token) {
+      setLoading(false);
+      return;
+    }
 
+    setLoading(true);
     try {
       const response = await api.getInstances(token);
       if (response.success && response.data) {
@@ -65,18 +69,22 @@ export default function DashboardScreen() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await fetchInstances();
     setRefreshing(false);
-  }, []);
+  }, [fetchInstances]);
+
+  useEffect(() => {
+    fetchInstances();
+  }, [fetchInstances]);
 
   useFocusEffect(
     useCallback(() => {
       fetchInstances();
-    }, [])
+    }, [fetchInstances])
   );
 
   const handleStartInstance = async (uuid: string) => {

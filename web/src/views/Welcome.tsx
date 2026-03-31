@@ -1,6 +1,6 @@
 import LaserFlow from "../components/ui/LaserFlow";
 import LogoLoop from "../components/ui/LogoLoop";
-import { LayoutDashboard, Bell, Server, Workflow, Activity, Zap, Play, Pause, RotateCcw, Trash2, Plus, Sparkles, FolderOpen, Library, LogOut, HelpCircle, BookOpen, FileCode, Check, Minus, Loader2 } from "lucide-react";
+import { LayoutDashboard, Bell, Server, Workflow, Activity, Zap, Play, Pause, RotateCcw, Trash2, Plus, Sparkles, FolderOpen, Library, LogOut, HelpCircle, BookOpen, FileCode, Check, Minus, Loader2, Download } from "lucide-react";
 import { motion } from "motion/react"
 import MagicBento from "../components/ui/MagicBento";
 import { useState } from "react";
@@ -1021,6 +1021,29 @@ export function Welcome() {
           © {new Date().getFullYear()} LogicAI Inc. Tous droits réservés.
         </div>
       </footer>
-    </>
-  );
-}
+
+      {/* Bulle flottante - Télécharger l'app Desktop */}
+      <motion.div
+        initial={{ opacity: 0, y: 30, scale: 0.9 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ delay: 1.2, duration: 0.5, type: "spring", stiffness: 200 }}
+        className="fixed bottom-8 right-8 z-50"
+      >
+        <a
+          href="/downloads/LogicAI-Setup.exe"
+          download="LogicAI-Setup.exe"
+          className="flex items-center gap-3 bg-[#0D0D0D] border border-white/15 rounded-2xl px-5 py-4 shadow-2xl hover:border-orange-500/50 hover:shadow-[0_0_40px_-5px_rgba(249,115,22,0.3)] transition-all duration-300 group cursor-pointer"
+        >
+          {/* Windows logo */}
+          <div className="size-10 rounded-xl bg-[#00A2ED]/10 border border-[#00A2ED]/20 flex items-center justify-center group-hover:bg-[#00A2ED]/20 transition-colors shrink-0">
+            <svg viewBox="0 0 24 24" className="size-5 fill-[#00A2ED]">
+              <path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.551H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801" />
+            </svg>
+          </div>
+          <div className="min-w-0">
+            <p className="text-white text-sm font-semibold leading-tight whitespace-nowrap">Application Desktop</p>
+            <p className="text-gray-400 text-xs">Windows · v1.0.0</p>
+          </div>
+          <Download className="size-4 text-gray-500 group-hover:text-orange-400 group-hover:translate-y-0.5 transition-all ml-1 shrink-0" />
+        </a>
+      </motion.div>

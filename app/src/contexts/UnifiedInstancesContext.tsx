@@ -47,7 +47,7 @@ export function UnifiedInstancesProvider({ children }: { children: ReactNode }) 
     if (!token) return [];
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3000/api'}/instances/list`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://api.logicai.fr/api'}/instances/list`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -107,7 +107,7 @@ export function UnifiedInstancesProvider({ children }: { children: ReactNode }) 
   const connectCloudWebSocket = useCallback(() => {
     if (!token) return;
 
-    const wsUrl = `${import.meta.env.VITE_API_URL?.replace('http', 'ws') || 'ws://localhost:3000'}/ws?token=${token}`;
+    const wsUrl = `${import.meta.env.VITE_API_URL?.replace('http', 'ws') || 'wss://api.logicai.fr'}/ws?token=${token}`;
 
     try {
       const ws = new WebSocket(wsUrl);

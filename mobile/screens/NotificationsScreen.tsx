@@ -17,7 +17,7 @@ export default function NotificationsScreen() {
       setLoading(true);
       try {
         // Remplace par l'endpoint réel côté /server
-        const res = await fetch(`${process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000/api'}/notifications`, {
+        const res = await fetch(`${process.env.EXPO_PUBLIC_API_URL || 'https://api.logicai.fr/api'}/notifications`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();

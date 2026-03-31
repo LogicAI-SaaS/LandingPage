@@ -55,7 +55,7 @@ export function WebSocketProvider({ children }: { children: ReactNode }) {
   const connect = () => {
     if (!token) return;
 
-    const wsUrl = `${import.meta.env.VITE_API_URL?.replace('http', 'ws') || 'ws://localhost:3000'}/ws?token=${token}`;
+    const wsUrl = `${import.meta.env.VITE_API_URL?.replace('http', 'ws') || 'wss://api.logicai.fr'}/ws?token=${token}`;
 
     try {
       const websocket = new WebSocket(wsUrl);
