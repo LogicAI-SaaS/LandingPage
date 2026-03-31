@@ -165,8 +165,8 @@ if (require.main === module) {
   const lastName = args[4] || '';
 
   if (!dbPath || !email || !password) {
-    console.error('Usage: node create-n8n-user.js <dbPath> <email> <password> [firstName] [lastName]');
-    console.error('Example: node create-n8n-user.js /home/node/.n8n/database.sqlite user@example.com password123 "John" "Doe"');
+    console.error('Usage: node create-instance-user.js <dbPath> <email> <password> [firstName] [lastName]');
+    console.error('Example: node create-instance-user.js /app/data/instance.db user@example.com password123 "John" "Doe"');
     process.exit(1);
   }
 

@@ -1,112 +1,86 @@
-const { promisePool } = require('../config/database');
+﻿const prisma = require('../config/database');
+
+function mapUser(u) {
+  if (!u) return null;
+  return {
+    id: u.id,
+    email: u.email,
+    password: u.password,
+    first_name: u.firstName,
+    last_name: u.lastName,
+    firstName: u.firstName,
+    lastName: u.lastName,
+    plan: u.plan,
+    role: u.role,
+    has_beta_access: u.hasBetaAccess,
+    hasBetaAccess: u.hasBetaAccess,
+    beta_access_id: u.betaAccessId,
+    betaAccessId: u.betaAccessId,
+    created_at: u.createdAt,
+    createdAt: u.createdAt,
+    updated_at: u.updatedAt,
+    updatedAt: u.updatedAt,
+  };
+}
+
+const DEFAULT_LIMITS = {
+  free:        { max_instances: 1,  max_workflows: 10,  max_storage_gb: 1,  max_executions_per_month: 1000 },
+  pro:         { max_instances: 5,  max_workflows: 100, max_storage_gb: 10, max_executions_per_month: 50000 },
+  business:    { max_instances: 20, max_workflows: -1,  max_storage_gb: 50, max_executions_per_month: 500000 },
+  corporation: { max_instances: -1, max_workflows: -1,  max_storage_gb: -1, max_executions_per_month: -1 },
+};
 
 class User {
-  // Créer un nouvel utilisateur
   static async create({ email, password, firstName, lastName, plan = 'free', role = 'user' }) {
-    try {
-      const sql = `
-        INSERT INTO users (email, password, first_name, last_name, plan, role)
-        VALUES (?, ?, ?, ?, ?, ?)
-      `;
-      const [result] = await promisePool.execute(sql, [email, password, firstName, lastName, plan, role]);
-      return result.insertId;
-    } catch (error) {
-      throw error;
-    }
+    const user = await prisma.user.create({
+      data: { email, password, firstName, lastName, plan, role },
+    });
+    return user.id;
   }
 
-  // Trouver un utilisateur par email
   static async findByEmail(email) {
-    try {
-      const sql = 'SELECT * FROM users WHERE email = ?';
-      const [rows] = await promisePool.execute(sql, [email]);
-      return rows[0] || null;
-    } catch (error) {
-      throw error;
-    }
+    const user = await prisma.user.findUnique({ where: { email } });
+    return mapUser(user);
   }
 
-  // Trouver un utilisateur par ID
   static async findById(id) {
-    try {
-      const sql = 'SELECT id, email, first_name, last_name, plan, role, created_at FROM users WHERE id = ?';
-      const [rows] = await promisePool.execute(sql, [id]);
-      return rows[0] || null;
-    } catch (error) {
-      throw error;
-    }
+    const user = await prisma.user.findUnique({ where: { id: Number(id) } });
+    return mapUser(user);
   }
 
-  // Mettre à jour le plan de l'utilisateur
   static async updatePlan(id, plan) {
-    try {
-      const sql = 'UPDATE users SET plan = ? WHERE id = ?';
-      await promisePool.execute(sql, [plan, id]);
-      return true;
-    } catch (error) {
-      throw error;
-    }
+    await prisma.user.update({ where: { id: Number(id) }, data: { plan } });
+    return true;
   }
 
-  // Mettre à jour le rôle de l'utilisateur
   static async updateRole(id, role) {
-    try {
-      const sql = 'UPDATE users SET role = ? WHERE id = ?';
-      await promisePool.execute(sql, [role, id]);
-      return true;
-    } catch (error) {
-      throw error;
-    }
+    await prisma.user.update({ where: { id: Number(id) }, data: { role } });
+    return true;
   }
 
-  // Récupérer tous les utilisateurs (pour les admins)
   static async findAll() {
-    try {
-      const sql = 'SELECT id, email, first_name, last_name, plan, role, created_at FROM users ORDER BY created_at DESC';
-      const [rows] = await promisePool.execute(sql);
-      return rows;
-    } catch (error) {
-      throw error;
-    }
+    const users = await prisma.user.findMany({ orderBy: { createdAt: 'desc' } });
+    return users.map(mapUser);
   }
 
-  // Vérifier si l'utilisateur a un rôle spécifique ou supérieur
   static hasRole(userRole, requiredRole) {
-    const roleHierarchy = { user: 0, mod: 1, admin: 2 };
-    return roleHierarchy[userRole] >= roleHierarchy[requiredRole];
+    const hierarchy = { user: 0, mod: 1, admin: 2 };
+    return (hierarchy[userRole] ?? 0) >= (hierarchy[requiredRole] ?? 0);
   }
 
-  // Obtenir les limites du plan
   static async getPlanLimits(plan) {
     try {
-      // Essayer de récupérer depuis la table plans
       const Plan = require('./Plan');
-      const limits = await Plan.getLimits(plan);
-      return limits;
-    } catch (error) {
-      // Fallback sur les valeurs par défaut si la table plans n'existe pas encore
-      const limits = {
-        free: { max_instances: 1, max_workflows: 10, max_storage_gb: 1, max_executions_per_month: 1000 },
-        pro: { max_instances: 5, max_workflows: 100, max_storage_gb: 10, max_executions_per_month: 50000 },
-        business: { max_instances: 20, max_workflows: -1, max_storage_gb: 50, max_executions_per_month: 500000 },
-        corporation: { max_instances: -1, max_workflows: -1, max_storage_gb: -1, max_executions_per_month: -1 } // -1 = illimité
-      };
-      return limits[plan] || limits.free;
+      return await Plan.getLimits(plan);
+    } catch {
+      return DEFAULT_LIMITS[plan] ?? DEFAULT_LIMITS.free;
     }
   }
 
-  // Version synchrone pour compatibilité (deprecated)
   static getPlanLimitsSync(plan) {
-    const limits = {
-      free: { max_instances: 1, max_workflows: 10, max_storage_gb: 1, max_executions_per_month: 1000 },
-      pro: { max_instances: 5, max_workflows: 100, max_storage_gb: 10, max_executions_per_month: 50000 },
-      business: { max_instances: 20, max_workflows: -1, max_storage_gb: 50, max_executions_per_month: 500000 },
-      corporation: { max_instances: -1, max_workflows: -1, max_storage_gb: -1, max_executions_per_month: -1 } // -1 = illimité
-    };
-    return limits[plan] || limits.free;
+    return DEFAULT_LIMITS[plan] ?? DEFAULT_LIMITS.free;
   }
 
-  // Vérifier si un plan est valide
   static isValidPlan(plan) {
     return ['free', 'pro', 'business', 'corporation'].includes(plan);
   }

@@ -1,4 +1,4 @@
-const { transporter } = require('../config/email');
+﻿const { transporter } = require('../config/email');
 const axios = require('axios');
 const { exec } = require('child_process');
 const util = require('util');
@@ -34,7 +34,7 @@ const sendTempPasswordEmail = async (email, tempPasswordOrUrl, instanceUrl) => {
     const mailOptions = {
       from: process.env.EMAIL_FROM || '"LogicAI" <noreply@logicai.fr>',
       to: email,
-      subject: hasPassword ? '🔐 Vos identifiants N8N - LogicAI' : '🚀 Votre instance N8N est prête - LogicAI',
+      subject: hasPassword ? '🔐 Vos identifiants LogicAI' : '🚀 Votre instance LogicAI est prête - LogicAI',
       html: `
         <!DOCTYPE html>
         <html>
@@ -54,12 +54,12 @@ const sendTempPasswordEmail = async (email, tempPasswordOrUrl, instanceUrl) => {
         <body>
           <div class="container">
             <div class="header">
-              <h1>🚀 LogicAI - N8N Instance</h1>
+              <h1>🚀 LogicAI - Instance</h1>
             </div>
             <div class="content">
-              <h2>${hasPassword ? 'Votre compte N8N est prêt !' : 'Votre instance N8N est prête !'}</h2>
+              <h2>${hasPassword ? 'Votre compte LogicAI est prêt !' : 'Votre instance LogicAI est prête !'}</h2>
               <p>Bonjour,</p>
-              <p>${hasPassword ? 'Votre compte N8N a été créé automatiquement.' : 'Votre instance N8N a été créée avec succès.'}</p>
+              <p>${hasPassword ? 'Votre compte LogicAI a été créé automatiquement.' : 'Votre instance LogicAI a été créée avec succès.'}</p>
 
               ${hasPassword ? `
               <div class="password-box">
@@ -79,7 +79,7 @@ const sendTempPasswordEmail = async (email, tempPasswordOrUrl, instanceUrl) => {
               `}
 
               <p style="text-align: center;">
-                <a href="${url}" class="button">Accéder à mon instance N8N</a>
+                <a href="${url}" class="button">Accéder à mon instance LogicAI</a>
               </p>
 
               <p><strong>⚠️ Important :</strong></p>
@@ -239,7 +239,7 @@ const createN8nOwnerAutomatically = async (containerName, email, password, first
     console.log('[N8N Auto-Setup] Starting automatic owner creation...');
 
     // Chemin du script
-    const scriptPath = path.join(__dirname, '../../scripts/create-n8n-user.js');
+    const scriptPath = path.join(__dirname, '../../scripts/create-instance-user.js');
 
     // Vérifier que le script existe
     if (!fs.existsSync(scriptPath)) {
@@ -248,12 +248,12 @@ const createN8nOwnerAutomatically = async (containerName, email, password, first
 
     // Copier le script dans le container
     console.log('[N8N Auto-Setup] Copying script to container...');
-    await execPromise(`docker cp ${scriptPath} ${containerName}:/tmp/create-n8n-user.js`);
+    await execPromise(`docker cp ${scriptPath} ${containerName}:/tmp/create-instance-user.js`);
 
     // Exécuter le script dans le container
     console.log('[N8N Auto-Setup] Executing user creation script...');
 
-    const command = `docker exec ${containerName} node /tmp/create-n8n-user.js /home/node/.n8n/database.sqlite "${email}" "${password}" "${firstName || 'Utilisateur'}" "${lastName || ''}"`;
+    const command = `docker exec ${containerName} node /tmp/create-instance-user.js /app/data/instance.db "${email}" "${password}" "${firstName || 'Utilisateur'}" "${lastName || ''}"`;
 
     console.log('[N8N Auto-Setup] Command:', command.replace(/password="[^"]*"/, 'password="***"'));
 
@@ -267,14 +267,14 @@ const createN8nOwnerAutomatically = async (containerName, email, password, first
       console.log('[N8N Auto-Setup] ✅ Owner account created successfully');
 
       // Nettoyer le script
-      await execPromise(`docker exec ${containerName} rm /tmp/create-n8n-user.js`);
+      await execPromise(`docker exec ${containerName} rm /tmp/create-instance-user.js`);
 
       return { success: true };
     }
 
     // Si le script a échoué, retourner un warning
-    console.log('[N8N Auto-Setup] ⚠️  Script execution may have failed');
-    await execPromise(`docker exec ${containerName} rm /tmp/create-n8n-user.js`);
+    console.log('[Instance Auto-Setup] ⚠️  Script execution may have failed');
+    await execPromise(`docker exec ${containerName} rm /tmp/create-instance-user.js`);
 
     return { success: true, warning: 'Owner creation may have failed - please check manually' };
 
@@ -284,7 +284,7 @@ const createN8nOwnerAutomatically = async (containerName, email, password, first
   }
 };
 
-// Envoyer l'email avec l'URL de l'instance LogicAI-N8N
+// Envoyer l'email avec l'URL de l'instance LogicAI
 const sendInstanceEmail = async (email, instanceUrl, instanceName) => {
   try {
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
@@ -318,9 +318,9 @@ const sendInstanceEmail = async (email, instanceUrl, instanceName) => {
               <h1>🚀 LogicAI - Instance Prête</h1>
             </div>
             <div class="content">
-              <h2>Votre instance LogicAI-N8N est prête !</h2>
+              <h2>Votre instance LogicAI est prête !</h2>
               <p>Bonjour,</p>
-              <p>Votre instance LogicAI-N8N a été créée avec succès et est maintenant accessible.</p>
+              <p>Votre instance LogicAI a été créée avec succès et est maintenant accessible.</p>
 
               <div class="info-box">
                 <p><strong>📋 Informations de votre instance :</strong></p>

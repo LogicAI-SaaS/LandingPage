@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const Instance = require('../models/Instance');
 const BetaAccess = require('../models/BetaAccess');
+const prisma = require('../config/database');
 
 // Obtenir les détails d'un utilisateur avec ses instances (admin seulement)
 exports.getUserById = async (req, res) => {
@@ -256,8 +257,7 @@ exports.deleteUser = async (req, res) => {
     }
 
     // Supprimer l'utilisateur (les instances seront supprimées en cascade grâce à la FK)
-    const { promisePool } = require('../config/database');
-    await promisePool.execute('DELETE FROM users WHERE id = ?', [userId]);
+    await prisma.user.delete({ where: { id: Number(userId) } });
 
     res.json({
       success: true,
@@ -297,13 +297,11 @@ exports.grantInstanceAccess = async (req, res) => {
     }
 
     // Vérifier si l'utilisateur a déjà accès
-    const { promisePool } = require('../config/database');
-    const [existing] = await promisePool.execute(
-      'SELECT * FROM instance_members WHERE instance_id = ? AND user_id = ?',
-      [instanceId, userId]
-    );
+    const existing = await prisma.instanceMember.findFirst({
+      where: { instanceId: Number(instanceId), userId: Number(userId) },
+    });
 
-    if (existing.length > 0) {
+    if (existing) {
       return res.status(400).json({
         success: false,
         message: 'Cet utilisateur a déjà accès à cette instance'
@@ -312,11 +310,16 @@ exports.grantInstanceAccess = async (req, res) => {
 
     // Ajouter l'accès
     const user = await User.findById(userId);
-    await promisePool.execute(
-      `INSERT INTO instance_members (instance_id, user_id, email, name, role, invitation_status)
-       VALUES (?, ?, ?, ?, ?, 'accepted')`,
-      [instanceId, userId, user.email, `${user.first_name} ${user.last_name}`, role]
-    );
+    await prisma.instanceMember.create({
+      data: {
+        instanceId: Number(instanceId),
+        userId: Number(userId),
+        email: user.email,
+        name: `${user.first_name} ${user.last_name}`,
+        role,
+        invitationStatus: 'accepted',
+      },
+    });
 
     res.json({
       success: true,

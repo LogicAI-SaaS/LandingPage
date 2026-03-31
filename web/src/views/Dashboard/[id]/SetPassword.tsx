@@ -37,7 +37,7 @@ export function SetPassword() {
     setError('');
 
     try {
-      // Confirmer l'accès à l'instance LogicAI-N8N
+      // Confirmer l'accès à l'instance LogicAI
       await fetch(`${import.meta.env.VITE_API_URL}/instances/${id}/password`, {
         method: 'PUT',
         headers: {
@@ -74,7 +74,7 @@ export function SetPassword() {
             </div>
             <h2 className="text-2xl font-bold mb-4">Configuration terminée !</h2>
             <p className="text-gray-400 mb-6">
-              Votre instance LogicAI-N8N est prête. Vous allez être redirigé vers votre dashboard...
+              Votre instance LogicAI est prête. Vous allez être redirigé vers votre dashboard...
             </p>
           </div>
         </motion.div>
@@ -105,9 +105,9 @@ export function SetPassword() {
             <Lock className="w-8 h-8 text-orange-500" />
           </div>
 
-          <h2 className="text-2xl font-bold text-center mb-2">Configurez votre instance LogicAI-N8N</h2>
+          <h2 className="text-2xl font-bold text-center mb-2">Configurez votre instance LogicAI</h2>
           <p className="text-gray-400 text-center mb-8">
-            Suivez les étapes ci-dessous pour finaliser la configuration de votre instance LogicAI-N8N
+            Suivez les étapes ci-dessous pour finaliser la configuration de votre instance LogicAI
           </p>
 
           {error && (
@@ -123,9 +123,9 @@ export function SetPassword() {
                 1
               </div>
               <div>
-                <h3 className="font-semibold mb-1">Ouvrez votre instance LogicAI-N8N</h3>
+                <h3 className="font-semibold mb-1">Ouvrez votre instance LogicAI</h3>
                 <p className="text-gray-400 text-sm mb-3">
-                  Cliquez sur le bouton ci-dessous pour ouvrir votre instance LogicAI-N8N dans un nouvel onglet
+                  Cliquez sur le bouton ci-dessous pour ouvrir votre instance LogicAI dans un nouvel onglet
                 </p>
                 <a
                   href={instanceUrl}
@@ -133,7 +133,7 @@ export function SetPassword() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-semibold transition-all text-sm"
                 >
-                  Ouvrir LogicAI-N8N
+                  Ouvrir LogicAI
                   <ExternalLink className="w-4 h-4" />
                 </a>
               </div>
@@ -186,7 +186,7 @@ export function SetPassword() {
           <div className="mt-6 p-4 rounded-lg bg-blue-500/10 border border-blue-500/30">
             <p className="text-sm text-blue-300">
               <strong>💡 Conseil :</strong> Conservez vos identifiants en lieu sûr. Vous pourrez les modifier
-              directement depuis l'interface LogicAI-N8N si nécessaire.
+              directement depuis l'interface LogicAI si nécessaire.
             </p>
           </div>
         </div>

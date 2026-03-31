@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const http = require('http');
 const cors = require('cors');
-const { initDatabase } = require('./config/database');
+const prisma = require('./config/database');
 const { initWebSocketServer } = require('./config/websocket');
 const authRoutes = require('./routes/auth');
 const instanceRoutes = require('./routes/instances');
@@ -21,7 +21,7 @@ app.use(cors({
   origin: [
     process.env.CORS_ORIGIN || 'http://localhost:5173',
     'http://localhost:1420',   // Tauri app dev server
-    'http://localhost:5678',   // Instance LogicAI-N8N
+    'http://localhost:5678',   // Instance LogicAI
     'http://localhost:5679',   // Autres instances possibles
     'http://localhost:5680',
     /^http:\/\/localhost:56\d{2}$/,  // Regex pour autoriser tous les ports 56xx
@@ -94,8 +94,9 @@ app.use((err, req, res, next) => {
 // Démarrer le serveur
 const startServer = async () => {
   try {
-    // Initialiser la base de données
-    await initDatabase();
+    // Vérifier la connexion à la base de données
+    await prisma.$connect();
+    console.log('✅ Database connected (PostgreSQL + Prisma)');
 
     // Créer le serveur HTTP
     const server = http.createServer(app);
@@ -116,7 +117,7 @@ const startServer = async () => {
       • POST   /api/auth/register  - Inscription
       • POST   /api/auth/login     - Connexion
       • GET    /api/auth/profile   - Profil utilisateur (protégé)
-      • POST   /api/instances/create - Créer une instance N8N
+      • POST   /api/instances/create - Créer une instance LogicAI
       • GET    /api/instances/list   - Lister les instances
 
       WebSocket:

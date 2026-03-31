@@ -244,7 +244,7 @@ export class LogicAIClient {
         throw new LogicAIError(`Instance is not running (status: ${instance.status})`);
       }
 
-      // Créer un client axios spécifique pour l'instance N8N
+      // Créer un client axios spécifique pour l'instance LogicAI
       const n8nClient = axios.create({
         baseURL: instance.url,
         timeout: this.config.timeout,

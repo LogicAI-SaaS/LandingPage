@@ -289,24 +289,24 @@ exports.getAllPlansAdmin = async (req, res) => {
 // Récupérer les statistiques d'utilisation des plans
 exports.getPlanStats = async (req, res) => {
   try {
-    const { promisePool } = require('../config/database');
-    
-    const [stats] = await promisePool.query(`
-      SELECT 
+    const prisma = require('../config/database');
+
+    const stats = await prisma.$queryRaw`
+      SELECT
         u.plan,
-        COUNT(u.id) as user_count,
-        COUNT(i.id) as instance_count,
-        p.display_name as plan_name
+        COUNT(u.id)::int AS user_count,
+        COUNT(i.id)::int AS instance_count,
+        p.display_name AS plan_name
       FROM users u
       LEFT JOIN instances i ON u.id = i.user_id AND i.status != 'deleted'
-      LEFT JOIN plans p ON u.plan = p.name
+      LEFT JOIN plans p ON u.plan::text = p.name::text
       GROUP BY u.plan, p.display_name
       ORDER BY user_count DESC
-    `);
+    `;
 
     res.json({
       success: true,
-      data: stats
+      data: stats,
     });
   } catch (error) {
     console.error('Get plan stats error:', error);

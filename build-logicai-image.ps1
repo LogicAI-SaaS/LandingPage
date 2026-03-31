@@ -1,7 +1,7 @@
-# Build LogicAI-N8N Docker Image
+﻿# Build LogicAI Docker Image
 # ===============================
 
-Write-Host "🔨 Building LogicAI-N8N Docker Image" -ForegroundColor Cyan
+Write-Host "🔨 Building LogicAI Docker Image" -ForegroundColor Cyan
 Write-Host "====================================" -ForegroundColor Cyan
 Write-Host ""
 
@@ -16,16 +16,16 @@ if (-not (Test-Path "docker-instance")) {
 Set-Location docker-instance
 
 Write-Host "Building Docker image from docker-instance/Dockerfile..." -ForegroundColor Yellow
-docker build -t logicai-n8n:latest .
+docker build -t logicai:latest .
 
 Write-Host ""
-Write-Host "✅ LogicAI-N8N image built successfully!" -ForegroundColor Green
+Write-Host "✅ LogicAI image built successfully!" -ForegroundColor Green
 Write-Host ""
-Write-Host "Image name: logicai-n8n:latest" -ForegroundColor White
+Write-Host "Image name: logicai:latest" -ForegroundColor White
 Write-Host ""
 Write-Host "📝 Useful commands:" -ForegroundColor Cyan
-Write-Host "   View image:   docker images | Select-String logicai-n8n" -ForegroundColor White
-Write-Host "   Image size:   docker images logicai-n8n:latest --format '{{.Size}}'" -ForegroundColor White
-Write-Host "   Remove image: docker rmi logicai-n8n:latest" -ForegroundColor White
+Write-Host "   View image:   docker images | Select-String logicai" -ForegroundColor White
+Write-Host "   Image size:   docker images logicai:latest --format '{{.Size}}'" -ForegroundColor White
+Write-Host "   Remove image: docker rmi logicai:latest" -ForegroundColor White
 Write-Host ""
 Write-Host "Done! 🎉" -ForegroundColor Green

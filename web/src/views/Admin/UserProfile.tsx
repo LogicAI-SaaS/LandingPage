@@ -269,7 +269,7 @@ export default function AdminUserProfile() {
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-semibold text-white flex items-center gap-2">
             <Server className="size-5" />
-            Instances N8N
+            Instances LogicAI
           </h3>
           <span className="text-gray-400">{instances.length} instance(s)</span>
         </div>

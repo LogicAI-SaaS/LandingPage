@@ -1,37 +1,64 @@
-const { promisePool } = require('../config/database');
+﻿const prisma = require('../config/database');
+
+function mapKey(k) {
+  if (!k) return null;
+  return {
+    id: k.id,
+    key_code: k.keyCode,
+    keyCode: k.keyCode,
+    max_uses: k.maxUses,
+    maxUses: k.maxUses,
+    used_count: k.usedCount,
+    usedCount: k.usedCount,
+    is_active: k.isActive,
+    isActive: k.isActive,
+    created_by: k.createdById,
+    createdById: k.createdById,
+    expires_at: k.expiresAt,
+    expiresAt: k.expiresAt,
+    created_at: k.createdAt,
+    createdAt: k.createdAt,
+    created_by_email: k.createdBy?.email ?? null,
+    first_name: k.createdBy?.firstName ?? null,
+    last_name: k.createdBy?.lastName ?? null,
+  };
+}
 
 class BetaKey {
   static async create(keyCode, maxUses, createdBy, expiresAt = null) {
-    const sql = 'INSERT INTO beta_keys (key_code, max_uses, created_by, expires_at) VALUES (?, ?, ?, ?)';
-    const [result] = await promisePool.execute(sql, [keyCode, maxUses, createdBy, expiresAt]);
-    return result.insertId;
+    const k = await prisma.betaKey.create({
+      data: {
+        keyCode,
+        maxUses,
+        createdById: Number(createdBy),
+        expiresAt: expiresAt ?? undefined,
+      },
+    });
+    return k.id;
   }
 
   static async findByKeyCode(keyCode) {
-    const sql = 'SELECT * FROM beta_keys WHERE key_code = ? AND is_active = 1';
-    const [rows] = await promisePool.execute(sql, [keyCode]);
-    return rows[0];
+    const k = await prisma.betaKey.findFirst({ where: { keyCode, isActive: true } });
+    return mapKey(k);
   }
 
   static async incrementUsage(keyCode) {
-    const sql = 'UPDATE beta_keys SET used_count = used_count + 1 WHERE key_code = ?';
-    await promisePool.execute(sql, [keyCode]);
+    await prisma.betaKey.update({
+      where: { keyCode },
+      data: { usedCount: { increment: 1 } },
+    });
   }
 
   static async getAll() {
-    const sql = `
-      SELECT bk.*, u.email as created_by_email, u.first_name, u.last_name
-      FROM beta_keys bk
-      LEFT JOIN users u ON bk.created_by = u.id
-      ORDER BY bk.created_at DESC
-    `;
-    const [rows] = await promisePool.execute(sql);
-    return rows;
+    const rows = await prisma.betaKey.findMany({
+      include: { createdBy: true },
+      orderBy: { createdAt: 'desc' },
+    });
+    return rows.map(mapKey);
   }
 
   static async deactivate(id) {
-    const sql = 'UPDATE beta_keys SET is_active = 0 WHERE id = ?';
-    await promisePool.execute(sql, [id]);
+    await prisma.betaKey.update({ where: { id: Number(id) }, data: { isActive: false } });
   }
 
   static generateKey() {

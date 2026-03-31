@@ -1,7 +1,7 @@
-const Instance = require('../models/Instance');
+﻿const Instance = require('../models/Instance');
 const User = require('../models/User');
 const docker = require('../config/docker');
-const { sendInstanceEmail } = require('../services/n8nService');
+const { sendInstanceEmail } = require('../services/instanceService');
 const { verifyEmailConfig } = require('../config/email');
 const { getWebSocketServer } = require('../config/websocket');
 const InstanceMember = require('../models/InstanceMember');
@@ -39,7 +39,7 @@ async function findAvailablePort() {
   throw new Error('No available port found');
 }
 
-// Créer une nouvelle instance LogicAI-N8N
+// Créer une nouvelle instance LogicAI
 exports.createInstance = async (req, res) => {
   try {
     // L'utilisateur est déjà vérifié par le middleware auth
@@ -104,7 +104,7 @@ exports.createInstance = async (req, res) => {
 
     // Instance cloud : création via Docker
     try {
-      console.log(`[Cloud Instance] Starting LogicAI-N8N creation for user ${user.id}, instance UUID: ${instance.uuid}`);
+      console.log(`[Cloud Instance] Starting LogicAI creation for user ${user.id}, instance UUID: ${instance.uuid}`);
 
       // Vérifier la connexion Docker
       try {
@@ -123,7 +123,7 @@ exports.createInstance = async (req, res) => {
       const port = await findAvailablePort();
       console.log(`[Instance Creation] Allocated port: ${port}`);
 
-      // Préparer les variables d'environnement pour LogicAI-N8N
+      // Préparer les variables d'environnement pour LogicAI
       const envVars = [
         `INSTANCE_ID=${instance.uuid}`,
         `INSTANCE_NAME=${instance.name}`,
@@ -135,7 +135,7 @@ exports.createInstance = async (req, res) => {
         'JWT_SECRET=logicai-instance-secret-key-change-in-production'
       ];
 
-      // Port bindings: LogicAI-N8N utilise le port 3000 en interne
+      // Port bindings: LogicAI utilise le port 3000 en interne
       const portBindings = {};
       portBindings['3000/tcp'] = [{ HostPort: String(port) }];
 
@@ -149,7 +149,7 @@ exports.createInstance = async (req, res) => {
       }
 
       const containerConfig = {
-        Image: 'logicai-n8n:latest',
+        Image: 'logicai:latest',
         name: `logicai-${instance.uuid}`,
         Env: envVars,
         HostConfig: {
@@ -164,7 +164,7 @@ exports.createInstance = async (req, res) => {
         }
       };
 
-      console.log(`[Instance Creation] Creating LogicAI-N8N container with config:`, {
+      console.log(`[Instance Creation] Creating LogicAI container with config:`, {
         name: containerConfig.name,
         image: containerConfig.Image,
         port: port,
@@ -177,14 +177,14 @@ exports.createInstance = async (req, res) => {
       await container.start();
       console.log(`[Instance Creation] Container started: ${container.id}`);
 
-      // Attendre que LogicAI-N8N soit prêt (initialisation de la base de données)
-      console.log('[Instance Creation] Waiting for LogicAI-N8N to initialize database...');
+      // Attendre que LogicAI soit prêt (initialisation de la base de données)
+      console.log('[Instance Creation] Waiting for LogicAI to initialize database...');
       await new Promise(resolve => setTimeout(resolve, 10000)); // Attendre 10 secondes
 
       const instanceUrl = `http://localhost:${port}`;
-      console.log(`[Instance Creation] LogicAI-N8N instance ready at ${instanceUrl}`);
+      console.log(`[Instance Creation] LogicAI instance ready at ${instanceUrl}`);
 
-      // Marquer comme mot de passe défini (LogicAI-N8N a son propre système d'auth)
+      // Marquer comme mot de passe défini (LogicAI a son propre système d'auth)
       await Instance.markPasswordSet(instance.id);
 
       // Envoyer l'email avec l'URL de l'instance
@@ -202,7 +202,7 @@ exports.createInstance = async (req, res) => {
 
       res.json({
         success: true,
-        message: 'Instance LogicAI-N8N créée avec succès. Un email avec les instructions a été envoyé.',
+        message: 'Instance LogicAI créée avec succès. Un email avec les instructions a été envoyé.',
         data: {
           instance: {
             id: instance.id,
@@ -232,7 +232,7 @@ exports.createInstance = async (req, res) => {
       } else if (dockerError.message.includes('ENOENT') || dockerError.message.includes('connect')) {
         errorMessage = 'Docker daemon n\'est pas accessible. Vérifiez que Docker Desktop est démarré.';
       } else if (dockerError.message.includes('image')) {
-        errorMessage = 'Erreur lors du chargement de l\'image LogicAI-N8N. Assurez-vous d\'avoir exécuté le script de build.';
+        errorMessage = 'Erreur lors du chargement de l\'image LogicAI. Assurez-vous d\'avoir exécuté le script de build.';
       } else if (dockerError.message.includes('port')) {
         errorMessage = 'Erreur d\'allocation de port. Aucun port disponible.';
       }
@@ -453,7 +453,7 @@ exports.deleteInstance = async (req, res) => {
   }
 };
 
-// Confirmer l'accès à l'instance (LogicAI-N8N a son propre système d'auth)
+// Confirmer l'accès à l'instance (LogicAI a son propre système d'auth)
 exports.setPassword = async (req, res) => {
   try {
     const { uuid } = req.params;
@@ -468,7 +468,7 @@ exports.setPassword = async (req, res) => {
       return res.status(403).json({ success: false, message: 'Accès non autorisé' });
     }
 
-    // LogicAI-N8N a son propre système d'authentification
+    // LogicAI a son propre système d'authentification
     // On marque juste l'instance comme configurée
     await Instance.markPasswordSet(instance.id);
 

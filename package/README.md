@@ -1,6 +1,6 @@
 # @logicai/sdk
 
-SDK JavaScript/TypeScript officiel pour interagir avec l'API LogicAI. Permet de gérer des instances N8N, trigger des workflows et automatiser vos processus.
+SDK JavaScript/TypeScript officiel pour interagir avec l'API LogicAI. Permet de gérer des instances LogicAI, trigger des workflows et automatiser vos processus.
 
 ## 📦 Installation
 

@@ -81,7 +81,7 @@ model Instance {
   containerId    String?        @map("container_id")
   tempPassword   String?        @map("temp_password")
   passwordSet    Boolean        @default(false) @map("password_set")
-  n8nEmail       String?        @map("n8n_email")
+  instanceEmail  String?        @map("instance_email")
   isShared       Boolean        @default(false) @map("is_shared")
   publicUrl      String?        @map("public_url")
   createdAt      DateTime       @default(now()) @map("created_at")

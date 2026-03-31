@@ -1,155 +1,145 @@
-const { promisePool } = require('../config/database');
+﻿const prisma = require('../config/database');
 const { v4: uuidv4 } = require('uuid');
 
+function mapMember(m) {
+  if (!m) return null;
+  return {
+    id: m.id,
+    instance_id: m.instanceId,
+    instanceId: m.instanceId,
+    user_id: m.userId,
+    userId: m.userId,
+    email: m.email,
+    name: m.name,
+    role: m.role,
+    temp_password: m.tempPassword,
+    tempPassword: m.tempPassword,
+    password_set: m.passwordSet,
+    passwordSet: m.passwordSet,
+    invitation_token: m.invitationToken,
+    invitationToken: m.invitationToken,
+    invitation_status: m.invitationStatus,
+    invitationStatus: m.invitationStatus,
+    created_at: m.createdAt,
+    createdAt: m.createdAt,
+    updated_at: m.updatedAt,
+    updatedAt: m.updatedAt,
+  };
+}
+
 class InstanceMember {
-  // Créer un membre d'instance
   static async create({ instanceId, userId, email, name, role = 'viewer' }) {
-    try {
-      const invitationToken = uuidv4();
-      const sql = `
-        INSERT INTO instance_members (instance_id, user_id, email, name, role, invitation_token)
-        VALUES (?, ?, ?, ?, ?, ?)
-      `;
-      const [result] = await promisePool.execute(sql, [instanceId, userId, email, name, role, invitationToken]);
-      return {
-        id: result.insertId,
-        instanceId,
-        userId,
+    const invitationToken = uuidv4();
+    const member = await prisma.instanceMember.create({
+      data: {
+        instanceId: Number(instanceId),
+        userId: userId ? Number(userId) : null,
         email,
         name,
         role,
-        invitationToken
-      };
-    } catch (error) {
-      throw error;
-    }
+        invitationToken,
+      },
+    });
+    return mapMember(member);
   }
 
-  // Trouver tous les membres d'une instance
   static async findByInstanceId(instanceId) {
-    try {
-      const sql = 'SELECT * FROM instance_members WHERE instance_id = ? ORDER BY created_at ASC';
-      const [rows] = await promisePool.execute(sql, [instanceId]);
-      return rows;
-    } catch (error) {
-      throw error;
-    }
+    const rows = await prisma.instanceMember.findMany({
+      where: { instanceId: Number(instanceId) },
+      orderBy: { createdAt: 'asc' },
+    });
+    return rows.map(mapMember);
   }
 
-  // Trouver un membre par ID
   static async findById(id) {
-    try {
-      const sql = 'SELECT * FROM instance_members WHERE id = ?';
-      const [rows] = await promisePool.execute(sql, [id]);
-      return rows[0] || null;
-    } catch (error) {
-      throw error;
-    }
+    const m = await prisma.instanceMember.findUnique({ where: { id: Number(id) } });
+    return mapMember(m);
   }
 
-  // Trouver un membre par token d'invitation
   static async findByInvitationToken(token) {
-    try {
-      const sql = 'SELECT * FROM instance_members WHERE invitation_token = ?';
-      const [rows] = await promisePool.execute(sql, [token]);
-      return rows[0] || null;
-    } catch (error) {
-      throw error;
-    }
+    const m = await prisma.instanceMember.findUnique({ where: { invitationToken: token } });
+    return mapMember(m);
   }
 
-  // Mettre à jour le rôle d'un membre
   static async updateRole(id, role) {
-    try {
-      const sql = 'UPDATE instance_members SET role = ? WHERE id = ?';
-      await promisePool.execute(sql, [role, id]);
-      return true;
-    } catch (error) {
-      throw error;
-    }
+    await prisma.instanceMember.update({ where: { id: Number(id) }, data: { role } });
+    return true;
   }
 
-  // Mettre à jour le statut d'invitation
   static async updateInvitationStatus(id, status) {
-    try {
-      const sql = 'UPDATE instance_members SET invitation_status = ? WHERE id = ?';
-      await promisePool.execute(sql, [status, id]);
-      return true;
-    } catch (error) {
-      throw error;
-    }
+    await prisma.instanceMember.update({ where: { id: Number(id) }, data: { invitationStatus: status } });
+    return true;
   }
 
-  // Accepter une invitation (lier l'utilisateur)
   static async acceptInvitation(memberId, userId) {
-    try {
-      const sql = 'UPDATE instance_members SET user_id = ?, invitation_status = ? WHERE id = ?';
-      await promisePool.execute(sql, [userId, 'accepted', memberId]);
-      return true;
-    } catch (error) {
-      throw error;
-    }
+    await prisma.instanceMember.update({
+      where: { id: Number(memberId) },
+      data: { userId: Number(userId), invitationStatus: 'accepted' },
+    });
+    return true;
   }
 
-  // Définir le mot de passe N8N d'un membre
-  static async setN8nPassword(id, tempPassword) {
-    try {
-      const sql = 'UPDATE instance_members SET temp_password = ? WHERE id = ?';
-      await promisePool.execute(sql, [tempPassword, id]);
-      return true;
-    } catch (error) {
-      throw error;
-    }
+  static async setTempPassword(id, tempPassword) {
+    await prisma.instanceMember.update({ where: { id: Number(id) }, data: { tempPassword } });
+    return true;
   }
 
-  // Marquer le mot de passe comme défini
   static async markPasswordSet(id) {
-    try {
-      const sql = 'UPDATE instance_members SET password_set = TRUE, temp_password = NULL WHERE id = ?';
-      await promisePool.execute(sql, [id]);
-      return true;
-    } catch (error) {
-      throw error;
-    }
+    await prisma.instanceMember.update({
+      where: { id: Number(id) },
+      data: { passwordSet: true, tempPassword: null },
+    });
+    return true;
   }
 
-  // Supprimer un membre
   static async delete(id) {
-    try {
-      const sql = 'DELETE FROM instance_members WHERE id = ?';
-      await promisePool.execute(sql, [id]);
-      return true;
-    } catch (error) {
-      throw error;
-    }
+    await prisma.instanceMember.delete({ where: { id: Number(id) } });
+    return true;
   }
 
-  // Trouver les instances où l'utilisateur est membre (invitation acceptée)
   static async findAcceptedInstancesByUserId(userId) {
-    try {
-      const sql = `
-        SELECT i.*, im.role as member_role
-        FROM instances i
-        JOIN instance_members im ON im.instance_id = i.id
-        WHERE im.user_id = ? AND im.invitation_status = 'accepted'
-        ORDER BY i.created_at DESC
-      `;
-      const [rows] = await promisePool.execute(sql, [userId]);
-      return rows;
-    } catch (error) {
-      throw error;
-    }
+    const members = await prisma.instanceMember.findMany({
+      where: { userId: Number(userId), invitationStatus: 'accepted' },
+      include: { instance: true },
+      orderBy: { instance: { createdAt: 'desc' } },
+    });
+    return members.map((m) => {
+      const inst = m.instance;
+      return {
+        id: inst.id,
+        user_id: inst.userId,
+        userId: inst.userId,
+        name: inst.name,
+        uuid: inst.uuid,
+        subdomain: inst.subdomain,
+        port: inst.port,
+        status: inst.status,
+        deployment_type: inst.deploymentType,
+        deploymentType: inst.deploymentType,
+        container_id: inst.containerId,
+        containerId: inst.containerId,
+        public_url: inst.publicUrl,
+        publicUrl: inst.publicUrl,
+        created_at: inst.createdAt,
+        createdAt: inst.createdAt,
+        updated_at: inst.updatedAt,
+        updatedAt: inst.updatedAt,
+        member_role: m.role,
+      };
+    });
   }
 
-  // Trouver les invitations d'un utilisateur
   static async findPendingInvitationsByEmail(email) {
-    try {
-      const sql = 'SELECT im.*, i.name as instance_name, i.uuid as instance_uuid, u.email as owner_email FROM instance_members im JOIN instances i ON im.instance_id = i.id JOIN users u ON i.user_id = u.id WHERE im.email = ? AND im.invitation_status = ? AND im.user_id IS NULL';
-      const [rows] = await promisePool.execute(sql, [email, 'pending']);
-      return rows;
-    } catch (error) {
-      throw error;
-    }
+    const members = await prisma.instanceMember.findMany({
+      where: { email, invitationStatus: 'pending', userId: null },
+      include: { instance: { include: { user: true } } },
+    });
+    return members.map((m) => ({
+      ...mapMember(m),
+      instance_name: m.instance.name,
+      instance_uuid: m.instance.uuid,
+      owner_email: m.instance.user.email,
+    }));
   }
 }
 
