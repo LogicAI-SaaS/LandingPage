@@ -74,6 +74,7 @@ prisma/migrations/*/migration.sql
 # Local apps (not in remote repo)
 /app/
 /mobile/
+/docker-instance/
 
 # Tauri
 app/src-tauri/target/
