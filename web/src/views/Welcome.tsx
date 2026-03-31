@@ -11,8 +11,8 @@ import { SEO } from "@/components/SEO";
 const STEPS = [
   {
     id: "01",
-    title: "Créez votre instance N8N",
-    desc: "Choisissez votre plan et déployez une ou plusieurs instances N8N en quelques clics. Configuration automatique incluse.",
+    title: "Créez votre instance LogicAI",
+    desc: "Choisissez votre plan et déployez une ou plusieurs instances LogicAI en quelques clics. Configuration automatique incluse.",
     color: "text-orange-500",
     bg: "bg-orange-500/10"
   },
@@ -33,11 +33,11 @@ const STEPS = [
 ];
 
 const FAQS = [
-  { q: "Puis-je héberger plusieurs instances N8N ?", a: "Oui, selon votre plan vous pouvez héberger de 1 instance (Free) jusqu'à un nombre illimité (Corporation). Le plan Pro offre 5 instances, et Business 20 instances." },
+  { q: "Puis-je héberger plusieurs instances LogicAI ?", a: "Oui, selon votre plan vous pouvez héberger de 1 instance (Free) jusqu'à un nombre illimité (Corporation). Le plan Pro offre 5 instances, et Business 20 instances." },
   { q: "L'API est-elle disponible sur tous les plans ?", a: "L'API est disponible à partir du plan Pro (29.99€/mois). Les plans Pro, Business et Corporation ont tous un accès complet à l'API. Chaque instance dispose de sa propre clé API." },
   { q: "Quelle est la différence entre les plans Business et Corporation ?", a: "Le plan Corporation offre des ressources illimitées (instances, workflows, stockage, exécutions), le white label, des intégrations personnalisées, une infrastructure dédiée et des certifications de conformité. Idéal pour les grandes entreprises." },
-  { q: "Comment fonctionne l'IA Make ?", a: "Notre IA Make vous permet de générer des workflows N8N complets à partir d'un prompt, ou de créer des prompts optimisés pour vos agents IA. Cette fonctionnalité est disponible sur tous les plans." },
-  { q: "Puis-je migrer mes workflows existants ?", a: "Absolument. Vous pouvez importer vos workflows N8N existants et utiliser notre API (disponible dès le plan Pro) pour les exporter dans différents langages (JS, TS, Python)." }
+  { q: "Comment fonctionne l'IA Make ?", a: "Notre IA Make vous permet de générer des workflows LogicAI complets à partir d'un prompt, ou de créer des prompts optimisés pour vos agents IA. Cette fonctionnalité est disponible sur tous les plans." },
+  { q: "Puis-je migrer mes workflows existants ?", a: "Absolument. Vous pouvez importer vos workflows existants et utiliser notre API (disponible dès le plan Pro) pour les exporter dans différents langages (JS, TS, Python)." }
 ];
 
 export function Welcome() {
@@ -110,9 +110,9 @@ export function Welcome() {
   return (
     <>
       <SEO
-        title="Hébergement N8N avec IA intégrée"
-        description="Déployez et gérez vos instances N8N en quelques clics. IA Make intégrée pour générer vos workflows automatiquement. API complète disponible pour automatiser vos tâches."
-        keywords="N8N hébergement, intelligence artificielle, workflows automatisation, IA Make, API N8N, cloud instances, workflow automation"
+        title="Hébergement LogicAI avec IA intégrée"
+        description="Déployez et gérez vos instances LogicAI en quelques clics. IA Make intégrée pour générer vos workflows automatiquement. API complète disponible pour automatiser vos tâches."
+        keywords="LogicAI hébergement, intelligence artificielle, workflows automatisation, IA Make, API LogicAI, cloud instances, workflow automation"
         ogUrl="https://logicai.com"
       />
       {/* Navbar fixe */}
@@ -214,12 +214,12 @@ export function Welcome() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-6xl font-bold tracking-tight leading-[1.1] mb-3"
           >
-            <div className="text-white">Hébergement N8N</div>
+            <div className="text-white">Hébergement LogicAI</div>
             <div className="text-white">avec <span className="text-gray-300">IA intégrée</span></div>
             <div><span className="text-transparent bg-clip-text bg-linear-to-r from-orange-500 to-amber-500">Simple</span> <span className="text-gray-300">& Puissant</span></div>
           </motion.h1>
           <p className="mb-6 text-lg text-gray-300 w-150">
-            Déployez et gérez vos instances N8N en quelques clics. IA Make intégrée pour générer vos workflows automatiquement. API complète disponible.
+            Déployez et gérez vos instances LogicAI en quelques clics. IA Make intégrée pour générer vos workflows automatiquement. API complète disponible.
           </p>
           <form className="flex flex-col gap-3 mb-3" onSubmit={handleBetaSignup}>
             <div className="flex flex-row space-x-3">
@@ -733,7 +733,7 @@ export function Welcome() {
                       <path fill="#38bdf8" d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm-5-9a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm10 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm-5 5a2 2 0 1 1 0-4 2 2 0 0 1 0 4z" />
                     </svg>
                   ),
-                  title: "N8N"
+                  title: "LogicAI"
                 },
               ]}
               speed={50}
@@ -754,7 +754,7 @@ export function Welcome() {
             Une plateforme <span className="text-[#868686]">complète</span>
           </h2>
           <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-            Hébergez, générez et exportez vos workflows N8N avec notre plateforme tout-en-un alimentée par l'IA.
+            Hébergez, générez et exportez vos workflows avec notre plateforme tout-en-un alimentée par l'IA.
           </p>
         </div>
 
@@ -867,7 +867,7 @@ export function Welcome() {
                 price: "0€", 
                 desc: "Plan gratuit pour démarrer avec LogicAI", 
                 features: [
-                  "1 instance N8N",
+                  "1 instance LogicAI",
                   "10 workflows",
                   "1 Go de stockage",
                   "1 000 exécutions/mois",
@@ -880,7 +880,7 @@ export function Welcome() {
                 price: "29.99€", 
                 desc: "Plan professionnel pour les utilisateurs avancés", 
                 features: [
-                  "5 instances N8N",
+                  "5 instances LogicAI",
                   "100 workflows",
                   "10 Go de stockage",
                   "50 000 exécutions/mois",
@@ -897,7 +897,7 @@ export function Welcome() {
                 price: "99.99€", 
                 desc: "Plan entreprise pour les équipes", 
                 features: [
-                  "20 instances N8N",
+                  "20 instances LogicAI",
                   "Workflows illimités",
                   "50 Go de stockage",
                   "500 000 exécutions/mois",
@@ -987,7 +987,7 @@ export function Welcome() {
               <span className="text-white text-lg font-bold">LogicAI</span>
             </div>
             <p className="text-gray-300 text-sm leading-relaxed">
-              Hébergement N8N professionnel avec IA intégrée. Déployez, générez et exportez vos workflows en toute simplicité.
+              Hébergement LogicAI professionnel avec IA intégrée. Déployez, générez et exportez vos workflows en toute simplicité.
             </p>
           </div>
           <div>

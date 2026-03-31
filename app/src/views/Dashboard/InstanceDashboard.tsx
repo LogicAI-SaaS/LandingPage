@@ -81,10 +81,11 @@ export default function InstanceDashboard() {
   useEffect(() => {
     const iframe = iframeRef.current;
     if (iframe && iframe.contentWindow && instanceToken && currentUrl) {
+      const contentWindow = iframe.contentWindow;
       const handleLoad = () => {
         try {
           // Envoyer le token d'instance à l'iframe
-          iframe.contentWindow.postMessage({
+          contentWindow.postMessage({
             type: 'LOGICAI_INSTANCE_AUTH',
             token: instanceToken
           }, '*');

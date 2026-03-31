@@ -246,7 +246,7 @@ export default function InstancePage() {
             // Pour l'instant, simuler des logs
             const mockLogs = [
                 'Container started',
-                'LogicAI-N8N initialization complete',
+                'LogicAI initialization complete',
                 'Listening on port 3000',
                 'Database initialized',
                 'Application ready'
@@ -355,7 +355,7 @@ export default function InstancePage() {
                             className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all"
                         >
                             <ExternalLink className="size-4" />
-                            Ouvrir LogicAI-N8N
+                            Ouvrir LogicAI
                         </a>
                     )}
                 </div>
@@ -646,7 +646,7 @@ export default function InstancePage() {
                                 rel="noopener noreferrer"
                                 className="block w-full text-center bg-orange-500 hover:bg-orange-600 text-white px-4 py-3 rounded-lg text-sm font-semibold transition-all"
                             >
-                                Ouvrir l'interface LogicAI-N8N
+                                Ouvrir l'interface LogicAI
                             </a>
                         </div>
                     )}

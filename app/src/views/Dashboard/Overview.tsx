@@ -6,6 +6,7 @@ import { useUnifiedInstances } from '../../contexts/UnifiedInstancesContext';
 import { useToast } from '../../contexts/ToastContext';
 import { useTabs } from '../../contexts/TabsContext';
 import { api } from '../../services/api';
+import { DockerStatus } from '../../components/DockerStatus';
 
 export default function Overview() {
     const { token } = useAuth();
@@ -168,6 +169,9 @@ export default function Overview() {
                 </div>
             </div>
 
+            {/* Docker Status */}
+            <DockerStatus className="mb-6" />
+
             {/* Graphique + Activité récente */}
             <div className="grid grid-cols-3 gap-6 mb-5">
                 {/* Graphique - 2/3 */}
@@ -315,8 +319,8 @@ export default function Overview() {
                                         className="border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer"
                                         onClick={() => {
                                           if (!actionLoading[instance.uuid]) {
-                                            const tab = openTab({
-                                              id: instance.id,
+                                            openTab({
+                                              id: String(instance.id),
                                               name: instance.name || `instance-${instance.uuid?.substring(0, 8)}`,
                                               uuid: instance.uuid,
                                               port: instance.port

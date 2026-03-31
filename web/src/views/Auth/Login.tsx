@@ -71,7 +71,7 @@ export function Login() {
     <>
       <SEO
         title="Connexion"
-        description="Connectez-vous à votre compte LogicAI pour accéder à vos instances N8N et workflows."
+        description="Connectez-vous à votre compte LogicAI pour accéder à vos instances d'automatisation et workflows."
         noIndex={true}
       />
       <div className="min-h-screen bg-black flex items-center justify-center px-4">

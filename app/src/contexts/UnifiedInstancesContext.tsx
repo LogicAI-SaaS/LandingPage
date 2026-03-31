@@ -3,7 +3,7 @@ import { useAuth } from './AuthContext';
 import * as localInstances from '../services/localInstances';
 
 interface UnifiedInstance {
-  id: number;
+  id: string | number;
   uuid: string;
   name: string;
   status: string;
@@ -14,6 +14,7 @@ interface UnifiedInstance {
   instance_email?: string;
   password_set: boolean;
   deployment_type: 'local' | 'cloud';
+  currentUrl?: string;
 }
 
 interface UnifiedInstancesContextType {

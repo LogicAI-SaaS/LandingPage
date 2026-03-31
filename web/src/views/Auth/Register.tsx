@@ -90,7 +90,7 @@ export function Register() {
     <>
       <SEO
         title="Inscription"
-        description="Créez votre compte LogicAI et commencez à héberger vos instances N8N avec IA intégrée."
+        description="Créez votre compte LogicAI et commencez à héberger vos instances d'automatisation avec IA intégrée."
         noIndex={true}
       />
       <div className="min-h-screen bg-black flex items-center justify-center px-4">

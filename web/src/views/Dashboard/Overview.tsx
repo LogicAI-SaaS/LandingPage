@@ -285,7 +285,7 @@ export default function Overview() {
                         <div className="text-center py-12">
                             <Server className="size-12 text-gray-500 mx-auto mb-4" />
                             <p className="text-gray-400 mb-2">Aucune instance créée</p>
-                            <p className="text-gray-500 text-sm mb-4">Créez votre première instance N8N pour commencer</p>
+                            <p className="text-gray-500 text-sm mb-4">Créez votre première instance LogicAI pour commencer</p>
                             <button
                                 onClick={() => navigate('/dashboard')}
                                 className='inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 rounded-md px-4 py-2 text-sm text-white transition-colors'
