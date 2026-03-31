@@ -1,0 +1,8 @@
+src/
+tsconfig.json
+*.test.ts
+.env
+.env.local
+coverage/
+.vscode/
+.idea/

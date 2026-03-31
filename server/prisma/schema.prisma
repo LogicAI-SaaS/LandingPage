@@ -1,0 +1,210 @@
+// Prisma Schema pour LogicAI
+// Compatible Prisma 5.x (URL direct dans datasource)
+// Note: Pour Prisma 7+, utiliser un environnement Prisma plus récent
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// USERS & AUTH
+// ============================================
+
+enum Role {
+  user
+  mod
+  admin
+}
+
+enum PlanType {
+  free
+  pro
+  business
+  corporation
+}
+
+model User {
+  id            Int      @id @default(autoincrement())
+  email         String   @unique
+  password      String
+  firstName     String?  @map("first_name")
+  lastName      String?  @map("last_name")
+  plan          PlanType @default(free)
+  role          Role     @default(user)
+  betaAccessId  Int?     @map("beta_access_id")
+  hasBetaAccess Boolean  @default(false) @map("has_beta_access")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  instances           Instance[]       @relation("UserInstances")
+  instanceMemberships InstanceMember[] @relation("InstanceMembers")
+  betaAccess          BetaAccess?      @relation("UserBetaAccess", fields: [betaAccessId], references: [id])
+  createdBetaKeys     BetaKey[]        @relation("CreatedBetaKeys")
+
+  @@index([email])
+  @@index([role])
+  @@map("users")
+}
+
+// ============================================
+// INSTANCES
+// ============================================
+
+enum InstanceStatus {
+  creating
+  running
+  stopped
+  error
+  deleted
+}
+
+enum DeploymentType {
+  local
+  cloud
+}
+
+model Instance {
+  id             Int            @id @default(autoincrement())
+  userId         Int            @map("user_id")
+  name           String
+  uuid           String         @unique
+  subdomain      String         @unique
+  port           Int?
+  status         InstanceStatus @default(creating)
+  deploymentType DeploymentType @default(cloud) @map("deployment_type")
+  containerId    String?        @map("container_id")
+  tempPassword   String?        @map("temp_password")
+  passwordSet    Boolean        @default(false) @map("password_set")
+  n8nEmail       String?        @map("n8n_email")
+  isShared       Boolean        @default(false) @map("is_shared")
+  publicUrl      String?        @map("public_url")
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
+
+  // Relations
+  user    User             @relation("UserInstances", fields: [userId], references: [id], onDelete: Cascade)
+  members InstanceMember[] @relation("InstanceMembers")
+
+  @@index([userId])
+  @@index([uuid])
+  @@index([status])
+  @@index([deploymentType])
+  @@map("instances")
+}
+
+// ============================================
+// INSTANCE MEMBERS (Collaboration)
+// ============================================
+
+enum MemberRole {
+  viewer
+  collaborator
+  admin
+  owner
+}
+
+enum InvitationStatus {
+  pending
+  accepted
+  declined
+}
+
+model InstanceMember {
+  id               Int              @id @default(autoincrement())
+  instanceId       Int              @map("instance_id")
+  userId           Int?             @map("user_id")
+  email            String
+  name             String?
+  role             MemberRole       @default(viewer)
+  tempPassword     String?          @map("temp_password")
+  passwordSet      Boolean          @default(false) @map("password_set")
+  invitationToken  String?          @unique @map("invitation_token")
+  invitationStatus InvitationStatus @default(pending) @map("invitation_status")
+  createdAt        DateTime         @default(now()) @map("created_at")
+  updatedAt        DateTime         @updatedAt @map("updated_at")
+
+  // Relations
+  instance Instance @relation("InstanceMembers", fields: [instanceId], references: [id], onDelete: Cascade)
+  user     User?    @relation("InstanceMembers", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([instanceId])
+  @@index([userId])
+  @@index([invitationToken])
+  @@map("instance_members")
+}
+
+// ============================================
+// PLANS & SUBSCRIPTIONS
+// ============================================
+
+model SubscriptionPlan {
+  id                    Int      @id @default(autoincrement())
+  name                  PlanType @unique
+  displayName           String   @map("display_name")
+  description           String?  @db.Text
+  priceMonthly          Decimal  @map("price_monthly") @db.Decimal(10, 2)
+  priceYearly           Decimal  @map("price_yearly") @db.Decimal(10, 2)
+  maxInstances          Int      @map("max_instances")
+  maxWorkflows          Int      @map("max_workflows")
+  maxStorageGb          Int      @map("max_storage_gb")
+  maxExecutionsPerMonth Int      @map("max_executions_per_month")
+  features              Json?
+  isActive              Boolean  @default(true) @map("is_active")
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+
+  @@index([name])
+  @@index([isActive])
+  @@map("plans")
+}
+
+// ============================================
+// BETA ACCESS
+// ============================================
+
+enum BetaStatus {
+  pending
+  approved
+  rejected
+}
+
+model BetaAccess {
+  id        Int        @id @default(autoincrement())
+  email     String     @unique
+  betaKey   String?    @map("beta_key")
+  status    BetaStatus @default(pending)
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+
+  // Relations
+  users User[] @relation("UserBetaAccess")
+
+  @@index([email])
+  @@index([betaKey])
+  @@index([status])
+  @@map("beta_access")
+}
+
+model BetaKey {
+  id          Int       @id @default(autoincrement())
+  keyCode     String    @unique @map("key_code")
+  maxUses     Int       @default(1) @map("max_uses")
+  usedCount   Int       @default(0) @map("used_count")
+  isActive    Boolean   @default(true) @map("is_active")
+  createdById Int       @map("created_by")
+  expiresAt   DateTime? @map("expires_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  // Relations
+  createdBy User @relation("CreatedBetaKeys", fields: [createdById], references: [id], onDelete: Cascade)
+
+  @@index([keyCode])
+  @@index([isActive])
+  @@map("beta_keys")
+}

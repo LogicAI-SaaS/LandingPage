@@ -1,0 +1,95 @@
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Build outputs
+dist/
+dist-ssr/
+build/
+web-build/
+*/dist/
+*/build/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+.env.local
+.env.production.local
+.env.development.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+n8n-db.sqlite
+
+# Editor directories
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+*.lnk
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Docker
+.dockerignore
+
+# Deployment artifacts
+.docker/
+.vercel/
+.netlify/
+
+# Logs & monitoring
+*.log.gz
+
+# Prisma
+prisma/migrations/*/migration.sql
+
+# Build artifacts
+*.tsbuildinfo
+
+# Tauri
+app/src-tauri/target/
+app/src-tauri/gen/schemas/
+
+# Expo/Mobile
+mobile/.expo/
+mobile/web-build/
+mobile/expo-env.d.ts
+mobile/ios/
+mobile/android/
+
+# Package
+package/*.tgz
+package/*.tar.gz
+
+# Documentation builds
+docs/_build/
+docs/.doctrees/
+
+# Memory & cache
+.claude/
+.memory/

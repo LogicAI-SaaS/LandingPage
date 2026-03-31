@@ -1,0 +1,59 @@
+# Dependencies
+node_modules/
+
+# Environment variables - CRITICAL
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+n8n-db.sqlite
+data/
+
+# Build outputs
+dist/
+build/
+
+# Prisma
+prisma/migrations/*/migration.sql
+!prisma/schema.prisma
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+uploads/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# PM2
+.pm2/
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Docker volumes
+docker-volumes/

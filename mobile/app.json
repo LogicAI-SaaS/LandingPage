@@ -1,0 +1,83 @@
+{
+  "expo": {
+    "name": "LogicAI - N8N Cloud Hosting",
+    "slug": "logicai",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/logo.png",
+    "scheme": "mobile",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.logicai.app",
+      "buildNumber": "1",
+      "infoPlist": {
+        "CFBundleDisplayName": "LogicAI",
+        "NSCameraUsageDescription": "LogicAI a besoin d'accéder à la caméra pour scanner des QR codes",
+        "NSPhotoLibraryUsageDescription": "LogicAI a besoin d'accéder à la galerie photo"
+      }
+    },
+    "android": {
+      "package": "com.logicai.app",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "backgroundColor": "#0070FF",
+        "foregroundImage": "./assets/images/android-icon-foreground.png",
+        "backgroundImage": "./assets/images/android-icon-background.png",
+        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "INTERNET",
+        "ACCESS_NETWORK_STATE"
+      ]
+    },
+    "web": {
+      "output": "static",
+      "favicon": "./assets/images/favicon.png",
+      "bundler": "metro",
+      "meta": {
+        "title": "LogicAI - N8N Cloud Hosting",
+        "description": "LogicAI est une plateforme innovante d'intelligence artificielle qui vous permet de créer, gérer et déployer des instances IA dans le cloud ou en local.",
+        "keywords": "intelligence artificielle, IA, AI, machine learning, cloud, instances, automatisation, productivité, LogicAI, N8N",
+        "theme-color": "#0070FF",
+        "og:title": "LogicAI - N8N Cloud Hosting",
+        "og:description": "Déployez et gérez vos instances N8N en quelques clics avec LogicAI",
+        "og:type": "website",
+        "og:image": "/LogicAI.png"
+      }
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#0070FF",
+          "dark": {
+            "backgroundColor": "#000000"
+          }
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "logicai-mobile-app"
+      }
+    },
+    "updates": {
+      "url": "https://u.expo.dev/updates"
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    }
+  }
+}
