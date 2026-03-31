@@ -20,7 +20,8 @@
       }
     ],
     "security": {
-      "csp": "default-src 'self'; connect-src 'self' http://localhost:3000 ws://localhost:3000 https://api.logicai.fr; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline';"
+      "csp": "default-src 'self'; connect-src 'self' http://localhost:3000 http://localhost:3001 http://localhost:3002 ws://localhost:3000 ws://localhost:3001 wss://api.logicai.fr https://api.logicai.fr https://*.logicai.fr wss://*.logicai.fr; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; frame-src 'self' http://localhost:* https://*.logicai.fr; navigate-to 'self' http://localhost:* https://*.logicai.fr https://api.logicai.fr;",
+      "dangerousDisableAssetCspModification": false
     }
   },
   "bundle": {

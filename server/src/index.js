@@ -4,6 +4,7 @@ const http = require('http');
 const cors = require('cors');
 const prisma = require('./config/database');
 const { initWebSocketServer } = require('./config/websocket');
+const { startInstanceProxy } = require('./config/instanceProxy');
 const authRoutes = require('./routes/auth');
 const instanceRoutes = require('./routes/instances');
 const instanceAuthProxyRoutes = require('./routes/instanceAuthProxy');
@@ -17,16 +18,21 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
+const corsOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173').split(',').map(o => o.trim());
 app.use(cors({
-  origin: [
-    process.env.CORS_ORIGIN || 'http://localhost:5173',
-    'http://localhost:1420',   // Tauri app dev server
-    'http://localhost:5678',   // Instance LogicAI
-    'http://localhost:5679',   // Autres instances possibles
-    'http://localhost:5680',
-    /^http:\/\/localhost:56\d{2}$/,  // Regex pour autoriser tous les ports 56xx
-    /^http:\/\/localhost:300\d{1}$/,  // Regex pour autoriser les ports 3000-3099
-  ],
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, curl, etc.)
+    if (!origin) return callback(null, true);
+    // Allow configured origins
+    if (corsOrigins.includes(origin)) return callback(null, true);
+    // Allow all *.logicai.fr subdomains (instance subdomains)
+    if (/^https:\/\/[a-f0-9]{8}\.logicai\.fr$/.test(origin)) return callback(null, true);
+    // Allow Tauri desktop app
+    if (origin === 'http://tauri.localhost' || origin === 'tauri://localhost') return callback(null, true);
+    // Allow Tauri and local dev ports
+    if (/^http:\/\/localhost:(1420|5[678]\d{2}|300\d)$/.test(origin)) return callback(null, true);
+    callback(new Error('Not allowed by CORS'));
+  },
   credentials: true
 }));
 app.use(express.json());
@@ -103,6 +109,9 @@ const startServer = async () => {
 
     // Initialiser le serveur WebSocket
     initWebSocketServer(server);
+
+    // Démarrer le proxy pour les sous-domaines d'instances
+    startInstanceProxy(3001);
 
     // Démarrer le serveur
     server.listen(PORT, () => {

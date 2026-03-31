@@ -24,7 +24,9 @@ export default function InstanceDashboard() {
     if (uuid && instances.length > 0) {
       const instance = instances.find(i => i.uuid === uuid);
       if (instance) {
-        const baseUrl = `http://localhost:${instance.port}`;
+        const baseUrl = instance.subdomain
+          ? `https://${instance.subdomain}`
+          : `http://localhost:${instance.port}`;
 
         // Récupérer l'URL sauvegardée si elle existe
         const savedUrl = instance.currentUrl || baseUrl;
@@ -112,7 +114,9 @@ export default function InstanceDashboard() {
       const instance = instances.find(i => i.uuid === uuid);
       if (!instance) return;
 
-      const expectedOrigin = `http://localhost:${instance.port}`;
+      const expectedOrigin = instance.subdomain
+        ? `https://${instance.subdomain}`
+        : `http://localhost:${instance.port}`;
       if (event.origin !== expectedOrigin) return;
 
       // Écouter les mises à jour d'URL depuis l'instance

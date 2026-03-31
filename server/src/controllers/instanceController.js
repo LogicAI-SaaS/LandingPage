@@ -131,8 +131,9 @@ exports.createInstance = async (req, res) => {
         'NODE_ENV=production',
         'PORT=3000',
         `DATABASE_URL=file:/app/data/instance.db`,
-        `CORS_ORIGIN=http://localhost:${port}`,
-        'JWT_SECRET=logicai-instance-secret-key-change-in-production'
+        `CORS_ORIGIN=https://${instance.subdomain}`,
+        'JWT_SECRET=logicai-instance-secret-key-change-in-production',
+        `GLOBAL_API_URL=https://api.logicai.fr`
       ];
 
       // Port bindings: LogicAI utilise le port 3000 en interne
