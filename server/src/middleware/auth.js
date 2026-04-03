@@ -3,6 +3,8 @@ const User = require('../models/User');
 
 // Middleware pour vérifier l'authentification
 const authMiddleware = async (req, res, next) => {
+  // If a preceding middleware (e.g. instanceAuthMiddleware) already authenticated the request, skip
+  if (req.user) return next();
   try {
     // Récupérer le token du header Authorization
     const authHeader = req.headers.authorization;
